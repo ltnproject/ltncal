@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator - Ltn Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s;
+        }
+
+        body.light {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .calculator {
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            width: 420px;
+            transition: background 0.3s;
+        }
+
+        body.light .calculator {
+            background: #ffffff;
+        }
+
+        body.dark .calculator {
+            background: #2d2d44;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        .display {
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transition: background 0.3s;
+        }
+
+        body.light .display {
+            background: #f8f9fa;
+        }
+
+        body.dark .display {
+            background: #1a1a2e;
+        }
+
+        .previous {
+            font-size: 16px;
+            min-height: 20px;
+            transition: color 0.3s;
+        }
+
+        body.light .previous {
+            color: #6c757d;
+        }
+
+        body.dark .previous {
+            color: #a0a0c0;
+        }
+
+        .current {
+            font-size: 32px;
+            font-weight: 600;
+            word-wrap: break-word;
+            word-break: break-all;
+            transition: color 0.3s;
+        }
+
+        body.light .current {
+            color: #212529;
+        }
+
+        body.dark .current {
+            color: #ffffff;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .number, .decimal {
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.light .number, body.light .decimal {
+            background: #e9ecef;
+            color: #212529;
+        }
+
+        body.dark .number, body.dark .decimal {
+            background: #3d3d5c;
+            color: #ffffff;
+        }
+
+        body.light .number:hover, body.light .decimal:hover {
+            background: #dee2e6;
+        }
+
+        body.dark .number:hover, body.dark .decimal:hover {
+            background: #4d4d6c;
+        }
+
+        .operator, .function {
+            background: #667eea;
+            color: white;
+        }
+
+        .operator:hover, .function:hover {
+            background: #5568d3;
+        }
+
+        .clear {
+            background: #dc3545;
+            color: white;
+        }
+
+        .clear:hover {
+            background: #c82333;
+        }
+
+        .equals {
+            background: #28a745;
+            color: white;
+        }
+
+        .equals:hover {
+            background: #218838;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        body.light .footer {
+            color: #6c757d;
+        }
+
+        body.dark .footer {
+            color: #a0a0c0;
+        }
+
+        .wide {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="calculator">
+        <div class="header">
+            <a href="https://ltnproject.github.io/dashboard/" class="back-btn">← Dashboard</a>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+        
+        <div class="display">
+            <div class="previous" id="previous"></div>
+            <div class="current" id="current">0</div>
+        </div>
+        
+        <div class="buttons">
+            <button class="function" onclick="appendFunction('sin(')">sin</button>
+            <button class="function" onclick="appendFunction('cos(')">cos</button>
+            <button class="function" onclick="appendFunction('tan(')">tan</button>
+            <button class="function" onclick="appendFunction('log(')">log</button>
+            <button class="function" onclick="appendFunction('ln(')">ln</button>
+            
+            <button class="function" onclick="appendFunction('sqrt(')">√</button>
+            <button class="operator" onclick="appendOperator('^')">x^y</button>
+            <button class="function" onclick="appendNumber('(')">(</button>
+            <button class="function" onclick="appendNumber(')')">)</button>
+            <button class="clear" onclick="clearDisplay()">C</button>
+            
+            <button class="number" onclick="appendNumber('7')">7</button>
+            <button class="number" onclick="appendNumber('8')">8</button>
+            <button class="number" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('/')">÷</button>
+            <button class="operator" onclick="deleteDigit()">DEL</button>
+            
+            <button class="number" onclick="appendNumber('4')">4</button>
+            <button class="number" onclick="appendNumber('5')">5</button>
+            <button class="number" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            <button class="function" onclick="appendNumber('Math.PI')">π</button>
+            
+            <button class="number" onclick="appendNumber('1')">1</button>
+            <button class="number" onclick="appendNumber('2')">2</button>
+            <button class="number" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            <button class="function" onclick="appendNumber('Math.E')">e</button>
+            
+            <button class="number wide" onclick="appendNumber('0')">0</button>
+            <button class="decimal" onclick="appendNumber('.')">.</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+        
+        <div class="footer">© 2025 Ltn Project by Jacob</div>
+    </div>
+
+    <script>
+        let current = '0';
+        let previous = '';
+        let expression = '';
+
+        function updateDisplay() {
+            document.getElementById('current').textContent = current;
+            document.getElementById('previous').textContent = previous;
+        }
+
+        function appendNumber(num) {
+            if (current === '0' && num !== '.') {
+                current = num;
+                expression = num;
+            } else {
+                current += num;
+                expression += num;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (current === '0' && expression === '') return;
+            current += ' ' + (op === '*' ? '×' : op === '/' ? '÷' : op) + ' ';
+            expression += op;
+            updateDisplay();
+        }
+
+        function appendFunction(func) {
+            if (current === '0') {
+                current = func;
+                expression = func.replace('sqrt', 'Math.sqrt').replace('log', 'Math.log10').replace('ln', 'Math.log').replace('sin', 'Math.sin').replace('cos', 'Math.cos').replace('tan', 'Math.tan');
+            } else {
+                current += func;
+                expression += func.replace('sqrt', 'Math.sqrt').replace('log', 'Math.log10').replace('ln', 'Math.log').replace('sin', 'Math.sin').replace('cos', 'Math.cos').replace('tan', 'Math.tan');
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                previous = current;
+                let evalExpression = expression.replace(/\^/g, '**');
+                let result = eval(evalExpression);
+                current = result.toString();
+                expression = result.toString();
+                updateDisplay();
+            } catch (e) {
+                current = 'Error';
+                expression = '';
+                updateDisplay();
+                setTimeout(() => {
+                    current = '0';
+                    updateDisplay();
+                }, 1500);
+            }
+        }
+
+        function clearDisplay() {
+            current = '0';
+            previous = '';
+            expression = '';
+            updateDisplay();
+        }
+
+        function deleteDigit() {
+            if (current.length === 1) {
+                current = '0';
+                expression = '';
+            } else {
+                current = current.slice(0, -1);
+                expression = expression.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.querySelector('.theme-toggle');
+            
+            if (body.classList.contains('light')) {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                toggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                toggle.textContent = '🌙';
+            }
+        }
+    </script>
+</body>
+</html>
